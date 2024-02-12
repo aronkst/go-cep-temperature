@@ -107,7 +107,7 @@ docker compose up
 Este comando realiza uma requisição HTTP GET sem um token de acesso:
 
 ```bash
-curl http://localhost:8080/cep=[CEP]
+curl http://localhost:8080/?cep=[CEP]
 ```
 ## Nota Sobre Não Fazer o Deploy no Google Cloud Run
 
