@@ -147,8 +147,6 @@ Para encerrar o projeto e parar o container do Docker, volte ao terminal onde o 
 docker compose down
 ```
 
-Esses passos garantem que você possa executar o projeto localmente de maneira fácil e rápida, utilizando o Docker e Docker Compose para gerenciar o ambiente de execução.
-
 ## Nota Sobre Não Fazer o Deploy no Google Cloud Run
 
 Decidi não realizar o deploy do meu projeto no Google Cloud Run e gostaria de compartilhar os motivos por trás dessa decisão:
