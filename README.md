@@ -99,7 +99,7 @@ Antes de começar, certifique-se de que você tem o Docker e o Docker Compose in
 
 ### Passo a Passo
 
-1. Clonar o Repositório
+### Clonar o Repositório
 
 Primeiro, clone o repositório do projeto para a sua máquina local. Abra um terminal e execute o comando:
 
@@ -107,7 +107,7 @@ Primeiro, clone o repositório do projeto para a sua máquina local. Abra um ter
 git clone https://github.com/aronkst/go-cep-temperature.git
 ```
 
-2. Navegar até o Diretório do Projeto
+### Navegar até o Diretório do Projeto
 
 Após clonar o repositório, navegue até o diretório do projeto utilizando o comando cd:
 
@@ -115,7 +115,7 @@ Após clonar o repositório, navegue até o diretório do projeto utilizando o c
 cd go-cep-temperature
 ```
 
-3. Construir e Executar o Projeto com Docker Compose
+### Construir e Executar o Projeto com Docker Compose
 
 No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto utilizando o Docker Compose:
 
@@ -125,7 +125,7 @@ docker compose up --build
 
 Este comando irá construir a imagem Docker do projeto e iniciar o container. O parâmetro `--build` garante que a imagem seja reconstruída caso haja mudanças no Dockerfile ou nas dependências do projeto.
 
-4. Acessar o Projeto
+### Acessar o Projeto
 
 Com o container rodando, você pode acessar o projeto através do navegador ou utilizando ferramentas como curl, apontando para http://localhost:8080/?cep=CEP, substituindo CEP pelo código postal desejado.
 
