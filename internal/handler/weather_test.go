@@ -49,7 +49,7 @@ func TestGetWeatherByCEP_ValidCEP(t *testing.T) {
 func TestGetWeatherByCEP_InvalidCEP(t *testing.T) {
 	mockService := &MockWeatherService{
 		Temperature: nil,
-		Err:         nil,
+		Err:         fmt.Errorf("invalid zipcode"),
 	}
 
 	handler := handler.NewWeatherHandler(mockService)
@@ -75,7 +75,7 @@ func TestGetWeatherByCEP_InvalidCEP(t *testing.T) {
 func TestGetWeatherByCEP_NotFound(t *testing.T) {
 	mockService := &MockWeatherService{
 		Temperature: nil,
-		Err:         fmt.Errorf("zipcode not found"),
+		Err:         fmt.Errorf("can not find zipcode"),
 	}
 
 	handler := handler.NewWeatherHandler(mockService)

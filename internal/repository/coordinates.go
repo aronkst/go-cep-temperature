@@ -25,6 +25,8 @@ func NewCoordinatesRepository(url string) CoordinatesRepository {
 }
 
 func (repository *coordinatesRepository) GetCoordinates(address *model.Address) (*model.Coordinates, error) {
+	defaultError := fmt.Errorf("can not find coordinates")
+
 	baseURL := repository.URL
 
 	params := url.Values{}
@@ -35,19 +37,19 @@ func (repository *coordinatesRepository) GetCoordinates(address *model.Address) 
 
 	req, err := http.NewRequest("GET", baseURL+"?"+params.Encode(), nil)
 	if err != nil {
-		return nil, fmt.Errorf("error when creating request: %w", err)
+		return nil, defaultError
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error when searching for coordinates for the address: %w", err)
+		return nil, defaultError
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("coordinates api returned status %d: %w", resp.StatusCode, err)
+		return nil, defaultError
 	}
 
 	var results []struct {
@@ -56,11 +58,11 @@ func (repository *coordinatesRepository) GetCoordinates(address *model.Address) 
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
-		return nil, fmt.Errorf("error decoding coordinates api response: %w", err)
+		return nil, defaultError
 	}
 
 	if len(results) == 0 {
-		return nil, fmt.Errorf("no coordinates found for the address")
+		return nil, defaultError
 	}
 
 	coordinates := &model.Coordinates{

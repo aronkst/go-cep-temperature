@@ -25,6 +25,8 @@ func NewWeatherByAddressRepository(url string) WeatherByAddressRepository {
 }
 
 func (repository *weatherByAddressRepository) GetWeather(address *model.Address) (*model.Weather, error) {
+	defaultError := fmt.Errorf("can not find zipcode")
+
 	var url string
 
 	if os.Getenv("TEST") == "true" {
@@ -35,12 +37,12 @@ func (repository *weatherByAddressRepository) GetWeather(address *model.Address)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("error when searching for weather forecast: %w", err)
+		return nil, defaultError
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("weather api returned status %d: %w", resp.StatusCode, err)
+		return nil, defaultError
 	}
 
 	var tempWeather struct {
@@ -50,7 +52,7 @@ func (repository *weatherByAddressRepository) GetWeather(address *model.Address)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&tempWeather); err != nil {
-		return nil, fmt.Errorf("error parsing json: %w", err)
+		return nil, defaultError
 	}
 
 	if len(tempWeather.CurrentCondition) > 0 {
@@ -58,6 +60,6 @@ func (repository *weatherByAddressRepository) GetWeather(address *model.Address)
 
 		return weather, nil
 	} else {
-		return nil, fmt.Errorf("temperature error")
+		return nil, defaultError
 	}
 }

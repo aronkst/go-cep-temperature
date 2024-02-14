@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/aronkst/go-cep-temperature/internal/model"
+	"github.com/aronkst/go-cep-temperature/pkg/utils"
 )
 
 type AddressRepository interface {
@@ -24,6 +25,12 @@ func NewAddressRepository(url string) AddressRepository {
 }
 
 func (repository *addressRepository) GetEndereco(cep string) (*model.Address, error) {
+	defaultError := fmt.Errorf("invalid zipcode")
+
+	if cep == "" || len(cep) != 8 || !utils.IsNumber(cep) {
+		return nil, defaultError
+	}
+
 	var url string
 
 	if os.Getenv("TEST") == "true" {
@@ -34,17 +41,21 @@ func (repository *addressRepository) GetEndereco(cep string) (*model.Address, er
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("error when searching for zipcode %s information: %w", cep, err)
+		return nil, defaultError
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("ViaCEP api returned status %d for zipcode %s: %w", resp.StatusCode, cep, err)
+		return nil, defaultError
 	}
 
 	var address model.Address
 	if err := json.NewDecoder(resp.Body).Decode(&address); err != nil {
-		return nil, fmt.Errorf("error when decoding ViaCEP api response to zipcode %s: %w", cep, err)
+		return nil, defaultError
+	}
+
+	if address.PostalCode == "" {
+		return nil, defaultError
 	}
 
 	return &address, nil
