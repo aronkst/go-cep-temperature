@@ -89,32 +89,78 @@ Os testes unitários cobrem uma ampla gama de casos de uso e cenários de erro, 
 - Conversão de Unidades de Temperatura: Testes que validam a precisão das conversões de temperatura entre Celsius, Fahrenheit e Kelvin, garantindo que os cálculos estejam corretos.
 - Tratamento de Erros: Testes específicos para verificar a robustez do sistema ao enfrentar erros durante a consulta de informações, incluindo falhas de rede, erros nas APIs externas e dados inesperados.
 
-## Pré-requisitos
+## Ambiente de Desenvolvimento
 
-Certifique-se de ter o Docker instalado no seu sistema. Você pode baixar e instalar o Docker a partir do [site oficial do Docker](https://www.docker.com/).
+### Pré-requisitos
 
-## Configuração
+Antes de começar, certifique-se de que você tem o Docker e o Docker Compose instalados em sua máquina. Caso não tenha, você pode baixar e instalar a partir dos seguintes links:
 
-- Clone o repositório.
+- Docker: https://docs.docker.com/get-docker/
 
-## Executando o Projeto
+### Passo a Passo
 
-```bash
-docker compose up
-```
-## Testes
+1. Clonar o Repositório
 
-Este comando realiza uma requisição HTTP GET sem um token de acesso:
+Primeiro, clone o repositório do projeto para a sua máquina local. Abra um terminal e execute o comando:
 
 ```bash
-curl http://localhost:8080/?cep=[CEP]
+git clone https://github.com/aronkst/go-cep-temperature.git
 ```
+
+2. Navegar até o Diretório do Projeto
+
+Após clonar o repositório, navegue até o diretório do projeto utilizando o comando cd:
+
+```bash
+cd go-cep-temperature
+```
+
+3. Construir e Executar o Projeto com Docker Compose
+
+No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto utilizando o Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Este comando irá construir a imagem Docker do projeto e iniciar o container. O parâmetro `--build` garante que a imagem seja reconstruída caso haja mudanças no Dockerfile ou nas dependências do projeto.
+
+4. Acessar o Projeto
+
+Com o container rodando, você pode acessar o projeto através do navegador ou utilizando ferramentas como curl, apontando para http://localhost:8080/?cep=CEP, substituindo CEP pelo código postal desejado.
+
+### Exemplo de Comando curl
+
+Para testar se o projeto está rodando corretamente, você pode usar o seguinte comando curl em um novo terminal:
+
+```bash
+curl "http://localhost:8080/?cep=01001000"
+```
+
+Você deverá receber uma resposta em JSON com as temperaturas em Celsius, Fahrenheit e Kelvin.
+
+### Encerrando o Projeto
+
+Para encerrar o projeto e parar o container do Docker, volte ao terminal onde o Docker Compose está rodando e pressione Ctrl+C. Para remover os containers criados pelo Docker Compose, execute:
+
+```bash
+docker compose down
+```
+
+Esses passos garantem que você possa executar o projeto localmente de maneira fácil e rápida, utilizando o Docker e Docker Compose para gerenciar o ambiente de execução.
+
 ## Nota Sobre Não Fazer o Deploy no Google Cloud Run
 
 Decidi não realizar o deploy do meu projeto no Google Cloud Run e gostaria de compartilhar os motivos por trás dessa decisão:
 
-**Excedi o Limite do Free Tier do Google Cloud**: A minha intenção era aproveitar as vantagens do Free Tier oferecido pelo Google Cloud Run. Contudo, já havia ultrapassado esses limites de uso gratuito no passado. Isso significaria que qualquer atividade futura de hospedagem resultaria em custos adicionais, algo que não estava nos meus planos iniciais.
+### Excedi o Limite do Free Tier do Google Cloud
 
-**Preocupações com os Custos Operacionais**: O Google Cloud Run é, sem dúvida, uma plataforma excelente que oferece escalabilidade e robustez. No entanto, a possibilidade de custos operacionais crescentes, especialmente quando o uso excede os limites do Free Tier, me levou a reavaliar essa opção.
+A minha intenção era aproveitar as vantagens do Free Tier oferecido pelo Google Cloud Run. Contudo, já havia ultrapassado esses limites de uso gratuito no passado. Isso significaria que qualquer atividade futura de hospedagem resultaria em custos adicionais, algo que não estava nos meus planos iniciais.
 
-**Priorização do Desenvolvimento e Teste Local**: Optei por focar meus esforços no desenvolvimento local, o que me oferece maior controle e flexibilidade durante a fase de desenvolvimento e testes do projeto.
+### Preocupações com os Custos Operacionais
+
+O Google Cloud Run é, sem dúvida, uma plataforma excelente que oferece escalabilidade e robustez. No entanto, a possibilidade de custos operacionais crescentes, especialmente quando o uso excede os limites do Free Tier, me levou a reavaliar essa opção.
+
+### Priorização do Desenvolvimento e Teste Local
+
+Optei por focar meus esforços no desenvolvimento local, o que me oferece maior controle e flexibilidade durante a fase de desenvolvimento e testes do projeto.
