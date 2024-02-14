@@ -1,6 +1,7 @@
 package repository_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -68,7 +69,7 @@ func TestWeatherByAddressRepository_ErrorHttp(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find zipcode"
+	expectedErrorMsg := "error when searching for weather forecast"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -100,7 +101,7 @@ func TestWeatherByAddressRepository_NotStatusOK(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find zipcode"
+	expectedErrorMsg := fmt.Sprintf("weather api returned status %d", statusServerError)
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -131,7 +132,7 @@ func TestWeatherByAddressRepository_ErrorJsonDecoder(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find zipcode"
+	expectedErrorMsg := "error parsing json"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -162,7 +163,7 @@ func TestWeatherByAddressRepository_JsonBlank(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find zipcode"
+	expectedErrorMsg := "temperature error"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}

@@ -1,6 +1,7 @@
 package repository_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -101,7 +102,7 @@ func TestAddressRepository_ErrorHttp(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "invalid zipcode"
+	expectedErrorMsg := fmt.Sprintf("error when searching for zipcode %s information", cep)
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -126,7 +127,7 @@ func TestAddressRepository_NotStatusOK(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "invalid zipcode"
+	expectedErrorMsg := fmt.Sprintf("ViaCEP api returned status %d for zipcode %s", statusServerError, cep)
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -150,7 +151,7 @@ func TestAddressRepository_ErrorJsonDecoder(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "invalid zipcode"
+	expectedErrorMsg := fmt.Sprintf("error when decoding ViaCEP api response to zipcode %s", cep)
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}

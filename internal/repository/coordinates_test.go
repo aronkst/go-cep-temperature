@@ -1,6 +1,7 @@
 package repository_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -69,7 +70,7 @@ func TestCoordinatesRepository_ErrorHttp(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find coordinates"
+	expectedErrorMsg := "error when searching for coordinates for the address"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -99,7 +100,7 @@ func TestCoordinatesRepository_NotStatusOK(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find coordinates"
+	expectedErrorMsg := fmt.Sprintf("coordinates api returned status %d", statusServerError)
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -128,7 +129,7 @@ func TestCoordinatesRepository_ErrorJsonDecoder(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find coordinates"
+	expectedErrorMsg := "error decoding coordinates api response"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
@@ -157,7 +158,7 @@ func TestCoordinatesRepository_JsonBlank(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "can not find coordinates"
+	expectedErrorMsg := "no coordinates found for the address"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}

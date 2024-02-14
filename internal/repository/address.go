@@ -25,10 +25,8 @@ func NewAddressRepository(url string) AddressRepository {
 }
 
 func (repository *addressRepository) GetEndereco(cep string) (*model.Address, error) {
-	defaultError := fmt.Errorf("invalid zipcode")
-
 	if cep == "" || len(cep) != 8 || !utils.IsNumber(cep) {
-		return nil, defaultError
+		return nil, fmt.Errorf("invalid zipcode")
 	}
 
 	var url string
@@ -41,21 +39,21 @@ func (repository *addressRepository) GetEndereco(cep string) (*model.Address, er
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, defaultError
+		return nil, fmt.Errorf("error when searching for zipcode %s information: %w", cep, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, defaultError
+		return nil, fmt.Errorf("ViaCEP api returned status %d for zipcode %s: %w", resp.StatusCode, cep, err)
 	}
 
 	var address model.Address
 	if err := json.NewDecoder(resp.Body).Decode(&address); err != nil {
-		return nil, defaultError
+		return nil, fmt.Errorf("error when decoding ViaCEP api response to zipcode %s: %w", cep, err)
 	}
 
 	if address.PostalCode == "" {
-		return nil, defaultError
+		return nil, fmt.Errorf("invalid zipcode")
 	}
 
 	return &address, nil

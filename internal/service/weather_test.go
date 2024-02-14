@@ -78,7 +78,7 @@ func TestWeatherService_Success(t *testing.T) {
 }
 
 func TestWeatherService_AddressNotFound(t *testing.T) {
-	expectedErrorMsg := "address not found"
+	expectedErrorMsg := "invalid zipcode"
 
 	mockAddressRepo := &MockAddressRepository{Err: fmt.Errorf(expectedErrorMsg)}
 	mockCoordinatesRepo := &MockCoordinatesRepository{}
@@ -98,7 +98,7 @@ func TestWeatherService_AddressNotFound(t *testing.T) {
 }
 
 func TestWeatherService_ErrorWhenCoordinates(t *testing.T) {
-	expectedErrorMsg := "weather coordinates not found"
+	expectedErrorMsg := "can not find zipcode"
 
 	mockAddressRepo := &MockAddressRepository{Address: &model.Address{PostalCode: "12345-678", Street: "Rua Exemplo", Complement: "", District: "Bairro", City: "Cidade", State: "Estado"}}
 	mockCoordinatesRepo := &MockCoordinatesRepository{Coordinates: &model.Coordinates{Latitude: "123", Longitude: "321"}}
@@ -118,7 +118,7 @@ func TestWeatherService_ErrorWhenCoordinates(t *testing.T) {
 }
 
 func TestWeatherService_ErrorWhenNotCoordinates(t *testing.T) {
-	expectedErrorMsg := "weather not Coordinates not found"
+	expectedErrorMsg := "can not find zipcode"
 
 	mockAddressRepo := &MockAddressRepository{Address: &model.Address{PostalCode: "12345-678", Street: "Rua Exemplo", Complement: "", District: "Bairro", City: "Cidade", State: "Estado"}}
 	mockCoordinatesRepo := &MockCoordinatesRepository{Err: fmt.Errorf("coordinates not found")}
