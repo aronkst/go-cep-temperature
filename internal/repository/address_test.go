@@ -61,7 +61,31 @@ func TestAddressRepository_Success(t *testing.T) {
 	}
 }
 
-func TestAddressRepository_InvalidCep(t *testing.T) {
+func TestAddressRepository_Invalid(t *testing.T) {
+	t.Setenv("TEST", "true")
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		responseBody := `{"erro":true}`
+		w.Write([]byte(responseBody))
+	}))
+	defer server.Close()
+
+	repo := repository.NewAddressRepository(server.URL)
+
+	cep := "123"
+
+	_, err := repo.GetEndereco(cep)
+	if err == nil {
+		t.Fatalf("Expected an error but got nil")
+	}
+
+	expectedErrorMsg := "invalid zipcode"
+	if !strings.Contains(err.Error(), expectedErrorMsg) {
+		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
+	}
+}
+
+func TestAddressRepository_NotFound(t *testing.T) {
 	t.Setenv("TEST", "true")
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +103,7 @@ func TestAddressRepository_InvalidCep(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "invalid zipcode"
+	expectedErrorMsg := "can not find zipcode"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}
