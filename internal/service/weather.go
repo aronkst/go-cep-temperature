@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/aronkst/go-cep-temperature/internal/model"
 	"github.com/aronkst/go-cep-temperature/internal/repository"
 	"github.com/aronkst/go-cep-temperature/pkg/utils"
@@ -34,7 +36,7 @@ func NewWeatherService(
 func (s *weatherService) GetWeatherByCEP(cep string) (*model.Temperature, error) {
 	address, err := s.addressRepository.GetEndereco(cep)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid zipcode")
 	}
 
 	var weather *model.Weather
@@ -43,12 +45,12 @@ func (s *weatherService) GetWeatherByCEP(cep string) (*model.Temperature, error)
 	if err == nil {
 		weather, err = s.weatherByCoordinatesRepository.GetWeather(coordinates)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("can not find zipcode")
 		}
 	} else {
 		weather, err = s.weatherByAddressRepository.GetWeather(address)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("can not find zipcode")
 		}
 	}
 
