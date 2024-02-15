@@ -8,7 +8,7 @@ dev-down:
 	docker compose down
 
 dev-run:
-	docker compose exec go run cmd/server/main.go
+	docker compose exec dev-go-cep-temperature go run cmd/server/main.go
 
 dev-run-tests:
 	docker compose exec dev-go-cep-temperature go test ./... -v
