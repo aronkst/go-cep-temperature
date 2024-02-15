@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  go-cep-temperature:
+    build: .
+    ports:
+      - "8080:8080"

@@ -89,15 +89,51 @@ Os testes unitários cobrem uma ampla gama de casos de uso e cenários de erro, 
 - Conversão de Unidades de Temperatura: Testes que validam a precisão das conversões de temperatura entre Celsius, Fahrenheit e Kelvin, garantindo que os cálculos estejam corretos.
 - Tratamento de Erros: Testes específicos para verificar a robustez do sistema ao enfrentar erros durante a consulta de informações, incluindo falhas de rede, erros nas APIs externas e dados inesperados.
 
-## Ambiente de Desenvolvimento
+## Makefile
 
-### Pré-requisitos
+Este projeto inclui um Makefile projetado para oferecer uma interface eficiente e simplificada para o gerenciamento dos ambientes de desenvolvimento e produção, além da execução de testes automatizados. Os comandos disponibilizados permitem otimizar e agilizar o fluxo de trabalho de desenvolvimento, testes e manutenção do projeto, assegurando uma gestão mais eficaz e organizada. Recomenda-se a utilização desses comandos para maximizar a produtividade e garantir a consistência em todas as fases do ciclo de vida do software.
+
+### Comandos de Desenvolvimento
+
+### `make dev-start`
+
+Inicia os serviços definidos no arquivo `docker-compose.yml` para o ambiente de desenvolvimento em modo detached (em segundo plano). Isso permite que os serviços rodem em background sem ocupar o terminal.
+
+### `make dev-stop`
+
+Interrompe os serviços que estão rodando em background para o ambiente de desenvolvimento. Isso não remove os containers, redes ou volumes criados pelo `docker compose up`.
+
+### `make dev-down`
+
+Desliga os serviços do ambiente de desenvolvimento e remove os containers, redes e volumes associados criados pelo `docker compose up`. Utilize este comando para limpar recursos após o desenvolvimento.
+
+### `make dev-run`
+
+Inicia a execução da aplicação dentro do ambiente de desenvolvimento, utilizando o Docker Compose para executar o comando `go run` no arquivo `cmd/server/main.go`. Ele é ideal para iniciar rapidamente o servidor do projeto em modo de desenvolvimento.
+
+### `make dev-run-tests`
+
+Executa todos os testes Go dentro do container especificado (`dev-go-cep-temperature`), mostrando detalhes verbosos de cada teste. Este comando é útil para rodar a suíte de testes do projeto e verificar se tudo está funcionando como esperado.
+
+### Comandos de Produção
+
+### `make prod-start`
+
+Inicia os serviços definidos no arquivo `docker-compose.prod.yml` para o ambiente de produção em modo detached. Isso é útil para rodar o projeto em um ambiente que simula a produção.
+
+### `make prod-stop`
+
+Interrompe os serviços do ambiente de produção que estão rodando em background, sem remover os containers, redes ou volumes associados.
+
+### `make prod-down`
+
+Desliga os serviços do ambiente de produção e remove os containers, redes e volumes associados, limpeza de recursos após o uso em produção.
+
+## Pré-requisitos
 
 Antes de começar, certifique-se de que você tem o Docker e o Docker Compose instalados em sua máquina. Caso não tenha, você pode baixar e instalar a partir dos seguintes links:
 
 - Docker: https://docs.docker.com/get-docker/
-
-### Passo a Passo
 
 ### Clonar o Repositório
 
@@ -115,7 +151,9 @@ Após clonar o repositório, navegue até o diretório do projeto utilizando o c
 cd go-cep-temperature
 ```
 
-### Construir e Executar o Projeto com Docker Compose
+## Ambiente de Desenvolvimento
+
+### Construir o Projeto com Docker Compose
 
 No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto utilizando o Docker Compose:
 
@@ -123,7 +161,27 @@ No diretório do projeto, execute o seguinte comando para construir e iniciar o 
 docker compose up --build
 ```
 
-Este comando irá construir a imagem Docker do projeto e iniciar o container. O parâmetro `--build` garante que a imagem seja reconstruída caso haja mudanças no Dockerfile ou nas dependências do projeto.
+Ou utilizando o Makefile:
+
+```bash
+make dev-start
+```
+
+Este comando irá construir a imagem Docker do projeto e iniciar o container.
+
+### Executar o Projeto com Docker Compose
+
+Para iniciar o serviço principal do seu projeto em modo de desenvolvimento, você pode utilizar o comando direto do Docker Compose:
+
+```bash
+docker compose exec go run cmd/server/main.go
+```
+
+Ou utilizando o Makefile:
+
+```bash
+make dev-start
+```
 
 ### Acessar o Projeto
 
@@ -146,6 +204,56 @@ Para encerrar o projeto e parar o container do Docker, volte ao terminal onde o 
 ```bash
 docker compose down
 ```
+
+Ou utilizando o Makefile:
+
+```bash
+make dev-down
+```
+
+## Ambiente de Produção
+
+### Construir e Executar o Projeto com Docker Compose
+
+No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto no ambiente de produção utilizando o Docker Compose:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
+```
+
+Ou utilizando o Makefile:
+
+```bash
+make prod-start
+```
+
+Este comando irá construir a imagem Docker do projeto para produção e iniciar os containers.
+
+### Exemplo de Comando curl
+
+Para verificar se o projeto em produção está operacional, utilize o seguinte comando curl, ajustando o endereço conforme sua configuração:
+
+```bash
+curl "http://localhost:8080/?cep=01001000"
+```
+
+Você deverá receber uma resposta em JSON com as informações solicitadas, como as temperaturas em Celsius, Fahrenheit e Kelvin.
+
+### Encerrando o Projeto
+
+Para encerrar o projeto e parar os containers de produção, utilize o seguinte comando:
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+Ou utilizando o Makefile:
+
+```bash
+make prod-down
+```
+
+Este comando encerra todos os serviços de produção e remove os containers, redes e volumes associados, assegurando que o ambiente de produção seja limpo após o uso.
 
 ## Nota Sobre Não Fazer o Deploy no Google Cloud Run
 
