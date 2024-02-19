@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/aronkst/go-cep-temperature/internal/service"
 )
@@ -23,11 +22,18 @@ func (h *WeatherHandler) GetWeatherByCEP(w http.ResponseWriter, r *http.Request)
 
 	temperature, err := h.weatherService.GetWeatherByCEP(cep)
 	if err != nil {
-		if strings.Contains(err.Error(), "invalid zipcode") {
-			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
-		} else {
-			http.Error(w, err.Error(), http.StatusNotFound)
+		var errorStatusCode int
+
+		switch err.Error() {
+		case "invalid zipcode":
+			errorStatusCode = http.StatusUnprocessableEntity
+		case "can not find zipcode":
+			errorStatusCode = http.StatusNotFound
+		default:
+			errorStatusCode = http.StatusInternalServerError
 		}
+
+		http.Error(w, err.Error(), errorStatusCode)
 
 		return
 	}

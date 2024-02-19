@@ -79,7 +79,7 @@ func TestAddressRepository_InvalidCep(t *testing.T) {
 		t.Fatalf("Expected an error but got nil")
 	}
 
-	expectedErrorMsg := "invalid zipcode"
+	expectedErrorMsg := "can not find zipcode"
 	if !strings.Contains(err.Error(), expectedErrorMsg) {
 		t.Errorf("Error message does not match expected. \nExpected to contain: %s\nGot: %s", expectedErrorMsg, err.Error())
 	}

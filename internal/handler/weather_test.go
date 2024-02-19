@@ -97,3 +97,29 @@ func TestGetWeatherByCEP_NotFound(t *testing.T) {
 		t.Errorf("handler returned unexpected body: got %v want %v", responseRecorder.Body.String(), expected)
 	}
 }
+
+func TestGetWeatherByCEP_InternalServerError(t *testing.T) {
+	mockService := &MockWeatherService{
+		Temperature: nil,
+		Err:         fmt.Errorf("internal server error"),
+	}
+
+	handler := handler.NewWeatherHandler(mockService)
+
+	req, err := http.NewRequest("GET", "/?cep=00000000", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	responseRecorder := httptest.NewRecorder()
+	handler.GetWeatherByCEP(responseRecorder, req)
+
+	if status := responseRecorder.Code; status != http.StatusInternalServerError {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusInternalServerError)
+	}
+
+	expected := "internal server error"
+	if strings.Trim(responseRecorder.Body.String(), "\n") != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v", responseRecorder.Body.String(), expected)
+	}
+}

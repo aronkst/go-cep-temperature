@@ -53,7 +53,7 @@ func (repository *addressRepository) GetEndereco(cep string) (*model.Address, er
 	}
 
 	if address.PostalCode == "" {
-		return nil, fmt.Errorf("invalid zipcode")
+		return nil, fmt.Errorf("can not find zipcode")
 	}
 
 	return &address, nil
