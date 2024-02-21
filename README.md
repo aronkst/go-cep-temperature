@@ -254,19 +254,3 @@ make prod-down
 ```
 
 Este comando encerra todos os serviços de produção e remove os containers, redes e volumes associados, assegurando que o ambiente de produção seja limpo após o uso.
-
-## Nota Sobre Não Fazer o Deploy no Google Cloud Run
-
-Decidi não realizar o deploy do meu projeto no Google Cloud Run e gostaria de compartilhar os motivos por trás dessa decisão:
-
-### Excedi o Limite do Free Tier do Google Cloud
-
-A minha intenção era aproveitar as vantagens do Free Tier oferecido pelo Google Cloud Run. Contudo, já havia ultrapassado esses limites de uso gratuito no passado. Isso significaria que qualquer atividade futura de hospedagem resultaria em custos adicionais, algo que não estava nos meus planos iniciais.
-
-### Preocupações com os Custos Operacionais
-
-O Google Cloud Run é, sem dúvida, uma plataforma excelente que oferece escalabilidade e robustez. No entanto, a possibilidade de custos operacionais crescentes, especialmente quando o uso excede os limites do Free Tier, me levou a reavaliar essa opção.
-
-### Priorização do Desenvolvimento e Teste Local
-
-Optei por focar meus esforços no desenvolvimento local, o que me oferece maior controle e flexibilidade durante a fase de desenvolvimento e testes do projeto.
