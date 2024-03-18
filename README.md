@@ -1,256 +1,256 @@
 # Go CEP Temperature
 
-## Visão Geral
+## Overview
 
-O projeto oferece uma solução avançada e prática para acessar informações climáticas detalhadas utilizando Códigos de Endereçamento Postal (CEPs) como base para a consulta. Simplesmente ao fornecer um CEP através da URL /?cep=CEP, os usuários recebem uma resposta rápida em formato JSON, que inclui as temperaturas atuais expressas nas três principais escalas termométricas: Celsius, Fahrenheit e Kelvin.
+The project offers an advanced and practical solution for accessing detailed weather information by using Postal Codes (CEPs) as the basis for the query. Simply by providing a CEP through the URL /?cep=CEP, users receive a quick response in JSON format, which includes current temperatures expressed in the three main thermometric scales: Celsius, Fahrenheit, and Kelvin.
 
-## Características
+## Features
 
-- **Consulta Direta por CEP**: Permite o acesso rápido a informações de temperatura específicas de uma localização, usando apenas o Código de Endereçamento Postal (CEP) como referência.
-- **Validação Rigorosa de CEP**: Implementa uma validação para garantir que o CEP fornecido esteja no formato correto, consistindo apenas de números e contendo exatamente 8 caracteres, assegurando a precisão das consultas.
-- **Autenticação Livre**: O sistema foi projetado para ser acessível sem a necessidade de tokens de API ou qualquer forma de autenticação, simplificando o acesso às informações climáticas.
-- **Respostas em Formato JSON**: Todas as respostas são fornecidas em formato JSON, facilitando a integração com outras aplicações e a manipulação dos dados.
-- **Suporte a Múltiplas Unidades de Temperatura**: Fornece temperaturas em Celsius, Fahrenheit e Kelvin, oferecendo flexibilidade para atender às preferências e necessidades específicas dos usuários.
-- **Atualizações Climáticas em Tempo Real**: Integra-se com serviços de meteorologia confiáveis para fornecer informações atualizadas e precisas sobre o clima.
+- **Direct Query by CEP**: Allows quick access to specific temperature information of a location, using only the Postal Code (CEP) as a reference.
+- **Rigorous CEP Validation**: Implements validation to ensure that the provided CEP is in the correct format, consisting only of numbers and containing exactly 8 characters, ensuring the accuracy of the queries.
+- **Free Authentication**: The system is designed to be accessible without the need for API tokens or any form of authentication, simplifying access to weather information.
+- **Responses in JSON Format**: All responses are provided in JSON format, facilitating integration with other applications and data handling.
+- **Support for Multiple Temperature Units**: Provides temperatures in Celsius, Fahrenheit, and Kelvin, offering flexibility to meet the preferences and needs of users.
+- **Real-Time Weather Updates**: Integrates with reliable meteorology services to provide updated and accurate weather information.
 
-## Exemplo de Uso
+## Usage Example
 
-Para consultar informações climáticas através da linha de comando, você pode usar o `curl`, uma ferramenta poderosa e disponível na maioria dos sistemas operacionais para fazer requisições HTTP. Abaixo estão exemplos práticos de como usar o curl para obter a temperatura com base em um CEP específico.
+To consult weather information through the command line, you can use `curl`, a powerful tool available on most operating systems for making HTTP requests. Below are practical examples of how to use curl to obtain the temperature based on a specific CEP.
 
-### Realizando uma Consulta
+### Making a Query
 
-Para fazer uma consulta, simplesmente substitua CEP pelo código postal desejado na URL. Aqui estão alguns exemplos:
+To make a query, simply replace CEP with the desired postal code in the URL. Here are some examples:
 
 ```bash
 curl "http://localhost:8080/?cep=01001000"
 ```
 
-Retorno esperado:
+Expected return:
 
 ```json
 {"temp_C":27.9,"temp_F":82.22,"temp_K":301.05}
 ```
 
-Neste exemplo, a requisição retorna a temperatura para o CEP 01001000 (um CEP de São Paulo), mostrando a temperatura em Celsius (temp_C), Fahrenheit (temp_F), e Kelvin (temp_K).
+In this example, the request returns the temperature for CEP 01001000 (a CEP from São Paulo), showing the temperature in Celsius (temp_C), Fahrenheit (temp_F), and Kelvin (temp_K).
 
 ```bash
 curl "http://localhost:8080/?cep=80210090"
 ```
 
-Retorno esperado:
+Expected return:
 
 ```json
 {"temp_C":25.3,"temp_F":77.54,"temp_K":298.45}
 ```
 
-Aqui, a temperatura é retornada para o CEP 80210090, que corresponde a uma localização em Curitiba.
+Here, the temperature is returned for CEP 80210090, which corresponds to a location in Curitiba.
 
-### Como os Dados são Retornados
+### How Data is Returned
 
-Os dados são retornados em formato JSON. Cada campo no JSON representa uma medida diferente de temperatura:
+Data is returned in JSON format. Each field in the JSON represents a different temperature measure:
 
-- `temp_C`: Temperatura em graus Celsius.
-- `temp_F`: Temperatura em graus Fahrenheit.
-- `temp_K`: Temperatura em Kelvin.
+- `temp_C`: Temperature in degrees Celsius.
+- `temp_F`: Temperature in degrees Fahrenheit.
+- `temp_K`: Temperature in Kelvin.
 
-## Desenvolvimento
+## Development
 
-Desenvolvi o projeto centrando-me no uso coordenado de várias APIs externas para entregar informações climáticas precisas baseadas em um Código de Endereçamento Postal (CEP) fornecido. O processo para obter essas informações segue uma sequência lógica de passos, onde cada um faz uso de uma API específica para alcançar o objetivo final. A seguir, detalho cada etapa e como cada API é empregada:
+I developed the project focusing on the coordinated use of several external APIs to deliver accurate weather information based on a provided Postal Code (CEP). The process to obtain this information follows a logical sequence of steps, where each one makes use of a specific API to achieve the final goal. Below, I detail each step and how each API is employed:
 
-### Busca de Endereço pelo CEP com viacep.com.br
+### Address Lookup by CEP with viacep.com.br
 
-O ponto de partida envolve coletar informações detalhadas sobre o endereço associado ao CEP fornecido. Utilizo a API do ViaCEP para essa finalidade. Ao receber um CEP válido, faço uma requisição à API do ViaCEP, que me retorna dados como logradouro, bairro, cidade e estado correspondente ao CEP. Esses dados são essenciais para determinar a localização geográfica exata a ser usada nas consultas climáticas que se seguem.
+The starting point involves collecting detailed information about the address associated with the provided CEP. I use the ViaCEP API for this purpose. Upon receiving a valid CEP, I make a request to the ViaCEP API, which returns data such as street, neighborhood, city, and state corresponding to the CEP. These data are essential for determining the exact geographical location to be used in the following weather queries.
 
-### Busca de Longitude e Latitude com nominatim.openstreetmap.org
+### Longitude and Latitude Lookup with nominatim.openstreetmap.org
 
-Tendo em mãos os dados do endereço, o próximo passo é convertê-los em coordenadas geográficas (latitude e longitude). Para isso, recorro à API do Nominatim, parte do projeto OpenStreetMap. Esta API permite que eu envie detalhes de localização, como cidade e estado, e receba em retorno as coordenadas geográficas precisas dessa localização. Esta conversão é vital para assegurar a acurácia das consultas climáticas baseadas em coordenadas.
+Having the address data, the next step is to convert them into geographical coordinates (latitude and longitude). For this, I turn to the Nominatim API, part of the OpenStreetMap project. This API allows me to send location details, such as city and state, and receive in return the precise geographical coordinates of that location. This conversion is vital to ensure the accuracy of weather queries based on coordinates.
 
-### Busca de Temperatura com api.open-meteo.com ou wttr.in
+### Temperature Lookup with api.open-meteo.com or wttr.in
 
-Dispondo das coordenadas geográficas, avanço para a fase de consulta das condições climáticas atuais. Neste ponto, o processo se divide, dependendo da disponibilidade das coordenadas:
+Having the geographical coordinates, I move on to the phase of querying the current weather conditions. At this point, the process divides, depending on the availability of coordinates:
 
-- Com dados de longitude e latitude disponíveis, recorro à API Open-Meteo. Esta API possibilita consultas climáticas detalhadas baseadas nas coordenadas geográficas, proporcionando dados de temperatura exatos para a localização desejada.
-- Sem dados de longitude e latitude, utilizo a API do wttr.in. Esta API fornece informações climáticas baseadas em nomes de localização (como cidades), derivados dos dados obtidos via ViaCEP. Embora este método possa não ser tão preciso quanto a consulta por coordenadas, ainda assim oferece uma estimativa útil das condições climáticas.
+- With longitude and latitude data available, I turn to the Open-Meteo API. This API allows for detailed weather queries based on geographical coordinates, providing exact temperature data for the desired location.
+- Without longitude and latitude data, I use the wttr.in API. This API provides weather information based on location names (such as cities), derived from the data obtained via ViaCEP. Although this method may not be as precise as querying by coordinates, it still offers a useful estimate of weather conditions.
 
-## Tratamentos de Erros
+## Error Handling
 
-Implementei tratamentos de erros em cada etapa para assegurar que o sistema possa lidar de forma adequada com cenários como CEPs inválidos, falhas na obtenção de coordenadas ou erros nas respostas das APIs climáticas.
+I implemented error handling at each step to ensure that the system can adequately deal with scenarios such as invalid CEPs, failures in obtaining coordinates, or errors in the responses from the weather APIs.
 
-## Testes Unitários
+## Unit Tests
 
-Uma parte integral do desenvolvimento deste projeto envolve a implementação de testes unitários abrangentes, garantindo a confiabilidade e a robustez de cada funcionalidade oferecida pela aplicação. A abordagem adotada para os testes segue as melhores práticas de desenvolvimento de software, focando na validação de cada componente isoladamente para assegurar seu correto funcionamento em diversos cenários.
+An integral part of developing this project involves the implementation of comprehensive unit tests, ensuring the reliability and robustness of each functionality offered by the application. The approach taken for testing follows best software development practices, focusing on validating each component in isolation to ensure its correct operation in various scenarios.
 
-### Cobertura dos Testes
+### Test Coverage
 
-Os testes unitários cobrem uma ampla gama de casos de uso e cenários de erro, incluindo, mas não se limitando a:
+The unit tests cover a wide range of use cases and error scenarios, including, but not limited to:
 
-- Validação de CEPs: Testes para assegurar que apenas CEPs válidos e no formato correto são aceitos, e que as mensagens de erro adequadas são retornadas para CEPs inválidos ou formatados incorretamente.
-- Consulta a APIs Externas: Testes para verificar a interação correta com as APIs externas usadas para obter informações de endereço, coordenadas geográficas e dados climáticos. Isso inclui simular respostas das APIs para testar o manejo adequado de dados e erros.
-- Conversão de Unidades de Temperatura: Testes que validam a precisão das conversões de temperatura entre Celsius, Fahrenheit e Kelvin, garantindo que os cálculos estejam corretos.
-- Tratamento de Erros: Testes específicos para verificar a robustez do sistema ao enfrentar erros durante a consulta de informações, incluindo falhas de rede, erros nas APIs externas e dados inesperados.
+- CEP Validation: Tests to ensure that only valid CEPs in the correct format are accepted, and that appropriate error messages are returned for invalid or incorrectly formatted CEPs.
+- External API Queries: Tests to verify the correct interaction with the external APIs used to obtain address information, geographical coordinates, and weather data. This includes simulating API responses to test the proper handling of data and errors.
+- Temperature Unit Conversion: Tests that validate the accuracy of temperature conversions between Celsius, Fahrenheit, and Kelvin, ensuring the calculations are correct.
+- Error Handling: Specific tests to check the system's robustness when facing errors during information querying, including network failures, external API errors, and unexpected data.
 
 ## Makefile
 
-Este projeto inclui um Makefile projetado para oferecer uma interface eficiente e simplificada para o gerenciamento dos ambientes de desenvolvimento e produção, além da execução de testes automatizados. Os comandos disponibilizados permitem otimizar e agilizar o fluxo de trabalho de desenvolvimento, testes e manutenção do projeto, assegurando uma gestão mais eficaz e organizada. Recomenda-se a utilização desses comandos para maximizar a produtividade e garantir a consistência em todas as fases do ciclo de vida do software.
+This project includes a Makefile designed to offer an efficient and simplified interface for managing development and production environments, as well as executing automated tests. The commands provided allow optimizing and streamlining the development workflow, testing, and maintenance of the project, ensuring more effective and organized management. It is recommended to use these commands to maximize productivity and ensure consistency throughout the software lifecycle.
 
-### Comandos de Desenvolvimento
+### Development Commands
 
 ### `make dev-start`
 
-Inicia os serviços definidos no arquivo `docker-compose.yml` para o ambiente de desenvolvimento em modo detached (em segundo plano). Isso permite que os serviços rodem em background sem ocupar o terminal.
+Starts the services defined in the `docker-compose.yml` file for the development environment in detached mode (in the background). This allows the services to run in the background without occupying the terminal.
 
 ### `make dev-stop`
 
-Interrompe os serviços que estão rodando em background para o ambiente de desenvolvimento. Isso não remove os containers, redes ou volumes criados pelo `docker compose up`.
+Stops the services running in the background for the development environment. This does not remove the containers, networks, or volumes created by `docker compose up`.
 
 ### `make dev-down`
 
-Desliga os serviços do ambiente de desenvolvimento e remove os containers, redes e volumes associados criados pelo `docker compose up`. Utilize este comando para limpar recursos após o desenvolvimento.
+Shuts down the development environment services and removes the containers, networks, and volumes associated created by `docker compose up`. Use this command to clean up resources after development.
 
 ### `make dev-run`
 
-Inicia a execução da aplicação dentro do ambiente de desenvolvimento, utilizando o Docker Compose para executar o comando `go run` no arquivo `cmd/server/main.go`. Ele é ideal para iniciar rapidamente o servidor do projeto em modo de desenvolvimento.
+Starts the application's execution within the development environment, using Docker Compose to execute the `go run` command in the `cmd/server/main.go` file. It is ideal for quickly starting the project server in development mode.
 
 ### `make dev-run-tests`
 
-Executa todos os testes Go dentro do container especificado (`dev-go-cep-temperature`), mostrando detalhes verbosos de cada teste. Este comando é útil para rodar a suíte de testes do projeto e verificar se tudo está funcionando como esperado.
+Runs all Go tests within the specified container (`dev-go-cep-temperature`), showing verbose details of each test. This command is useful for running the project's test suite and verifying everything is working as expected.
 
-### Comandos de Produção
+### Production Commands
 
 ### `make prod-start`
 
-Inicia os serviços definidos no arquivo `docker-compose.prod.yml` para o ambiente de produção em modo detached. Isso é útil para rodar o projeto em um ambiente que simula a produção.
+Starts the services defined in the `docker-compose.prod.yml` file for the production environment in detached mode. This is useful for running the project in an environment that simulates production.
 
 ### `make prod-stop`
 
-Interrompe os serviços do ambiente de produção que estão rodando em background, sem remover os containers, redes ou volumes associados.
+Stops the production environment services running in the background, without removing the associated containers, networks, or volumes.
 
 ### `make prod-down`
 
-Desliga os serviços do ambiente de produção e remove os containers, redes e volumes associados, limpeza de recursos após o uso em produção.
+Shuts down the production environment services and removes the associated containers, networks, and volumes, cleaning up resources after use in production.
 
-## Pré-requisitos
+## Prerequisites
 
-Antes de começar, certifique-se de que você tem o Docker e o Docker Compose instalados em sua máquina. Caso não tenha, você pode baixar e instalar a partir dos seguintes links:
+Before starting, make sure you have Docker and Docker Compose installed on your machine. If not, you can download and install them from the following links:
 
 - Docker: https://docs.docker.com/get-docker/
 
-### Clonar o Repositório
+### Clone the Repository
 
-Primeiro, clone o repositório do projeto para a sua máquina local. Abra um terminal e execute o comando:
+First, clone the project repository to your local machine. Open a terminal and execute the command:
 
 ```bash
 git clone https://github.com/aronkst/go-cep-temperature.git
 ```
 
-### Navegar até o Diretório do Projeto
+### Navigate to the Project Directory
 
-Após clonar o repositório, navegue até o diretório do projeto utilizando o comando cd:
+After cloning the repository, navigate to the project directory using the cd command:
 
 ```bash
 cd go-cep-temperature
 ```
 
-## Ambiente de Desenvolvimento
+## Development Environment
 
-### Construir o Projeto com Docker Compose
+### Build the Project with Docker Compose
 
-No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto utilizando o Docker Compose:
+In the project directory, execute the following command to build and start the project using Docker Compose:
 
 ```bash
 docker compose up --build
 ```
 
-Ou utilizando o Makefile:
+Or using the Makefile:
 
 ```bash
 make dev-start
 ```
 
-Este comando irá construir a imagem Docker do projeto e iniciar o container.
+This command will build the Docker image of the project and start the container.
 
-### Executar o Projeto com Docker Compose
+### Run the Project with Docker Compose
 
-Para iniciar o serviço principal do seu projeto em modo de desenvolvimento, você pode utilizar o comando direto do Docker Compose:
+To start the main service of your project in development mode, you can use the direct Docker Compose command:
 
 ```bash
 docker compose exec go run cmd/server/main.go
 ```
 
-Ou utilizando o Makefile:
+Or using the Makefile:
 
 ```bash
 make dev-start
 ```
 
-### Acessar o Projeto
+### Access the Project
 
-Com o container rodando, você pode acessar o projeto através do navegador ou utilizando ferramentas como curl, apontando para http://localhost:8080/?cep=CEP, substituindo CEP pelo código postal desejado.
+With the container running, you can access the project through the browser or using tools like curl, pointing to http://localhost:8080/?cep=CEP, replacing CEP with the desired postal code.
 
-### Exemplo de Comando curl
+### Example curl Command
 
-Para testar se o projeto está rodando corretamente, você pode usar o seguinte comando curl em um novo terminal:
+To test if the project is running correctly, you can use the following curl command in a new terminal:
 
 ```bash
 curl "http://localhost:8080/?cep=01001000"
 ```
 
-Você deverá receber uma resposta em JSON com as temperaturas em Celsius, Fahrenheit e Kelvin.
+You should receive a JSON response with temperatures in Celsius, Fahrenheit, and Kelvin.
 
-### Encerrando o Projeto
+### Ending the Project
 
-Para encerrar o projeto e parar o container do Docker, volte ao terminal onde o Docker Compose está rodando e pressione Ctrl+C. Para remover os containers criados pelo Docker Compose, execute:
+To end the project and stop the Docker container, return to the terminal where Docker Compose is running and press Ctrl+C. To remove the containers created by Docker Compose, execute:
 
 ```bash
 docker compose down
 ```
 
-Ou utilizando o Makefile:
+Or using the Makefile:
 
 ```bash
 make dev-down
 ```
 
-## Ambiente de Produção
+## Production Environment
 
-### Construir e Executar o Projeto com Docker Compose
+### Build and Run the Project with Docker Compose
 
-No diretório do projeto, execute o seguinte comando para construir e iniciar o projeto no ambiente de produção utilizando o Docker Compose:
+In the project directory, execute the following command to build and start the project in the production environment using Docker Compose:
 
 ```bash
 docker compose -f docker-compose.prod.yml up --build
 ```
 
-Ou utilizando o Makefile:
+Or using the Makefile:
 
 ```bash
 make prod-start
 ```
 
-Este comando irá construir a imagem Docker do projeto para produção e iniciar os containers.
+This command will build the Docker image of the project for production and start the containers.
 
-### Exemplo de Comando curl
+### Example curl Command
 
-Para verificar se o projeto em produção está operacional, utilize o seguinte comando curl, ajustando o endereço conforme sua configuração:
+To check if the project in production is operational, use the following curl command, adjusting the address as per your setup:
 
 ```bash
 curl "http://localhost:8080/?cep=01001000"
 ```
 
-Você deverá receber uma resposta em JSON com as informações solicitadas, como as temperaturas em Celsius, Fahrenheit e Kelvin.
+You should receive a JSON response with the requested information, such as temperatures in Celsius, Fahrenheit, and Kelvin.
 
-### Encerrando o Projeto
+### Ending the Project
 
-Para encerrar o projeto e parar os containers de produção, utilize o seguinte comando:
+To end the project and stop the production containers, use the following command:
 
 ```bash
 docker compose -f docker-compose.prod.yml down
 ```
 
-Ou utilizando o Makefile:
+Or using the Makefile:
 
 ```bash
 make prod-down
 ```
 
-Este comando encerra todos os serviços de produção e remove os containers, redes e volumes associados, assegurando que o ambiente de produção seja limpo após o uso.
+This command shuts down all production services and removes the associated containers, networks, and volumes, ensuring the production environment is cleaned up after use.
