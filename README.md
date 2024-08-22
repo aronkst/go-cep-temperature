@@ -1,7 +1,5 @@
 # Go CEP Temperature
 
-## Overview
-
 The project offers an advanced and practical solution for accessing detailed weather information by using Postal Codes (CEPs) as the basis for the query. Simply by providing a CEP through the URL /?cep=CEP, users receive a quick response in JSON format, which includes current temperatures expressed in the three main thermometric scales: Celsius, Fahrenheit, and Kelvin.
 
 ## Features
